@@ -6,8 +6,8 @@ import Specimen from "../components/Specimen/Specimen";
 import { text } from "../styles/typography";
 import renderMarkdown from "../markdown/renderMarkdown";
 
-function getStyle(theme) {
-  return {
+function getStyle(theme, customStyle = {}) {
+  let style = {
     container: {
       flexBasis: "100%",
       overflow: "auto",
@@ -37,6 +37,19 @@ function getStyle(theme) {
       "& > :last-child": { marginBottom: 0 }
     }
   };
+
+  Object.keys(customStyle).forEach(key => {
+    if (!style[key]) {
+      style[key] = {};
+    }
+
+    style[key] = {
+      ...style[key],
+      ...customStyle[key]
+    };
+  });
+
+  return style;
 }
 
 const Cell = ({ value, style }) => {
@@ -63,10 +76,32 @@ const HeadingCell = ({ value, style }) => (
 
 HeadingCell.propTypes = Cell.propTypes;
 
+const TableHead = ({ columns, style }) => (
+  <thead className={css(style.head)}>
+    <tr>
+      {columns.map((key, k) => (
+        <HeadingCell value={key} key={k} style={style.cell} />
+      ))}
+    </tr>
+  </thead>
+);
+
+TableHead.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.string)
+};
+
 class Table extends React.Component {
   render() {
-    const { columns, rows, catalog: { theme } } = this.props;
-    const { cell, container, table, head, tableRow } = getStyle(theme);
+    const {
+      columns,
+      rows,
+      customStyle,
+      catalog: { theme }
+    } = this.props;
+    const { cell, container, table, head, tableRow } = getStyle(
+      theme,
+      customStyle
+    );
 
     const tableKeys = columns
       ? columns
@@ -77,13 +112,9 @@ class Table extends React.Component {
     return (
       <section className={css(container)}>
         <table className={css(table)}>
-          <thead className={css(head)}>
-            <tr>
-              {tableKeys.map((key, k) => (
-                <HeadingCell value={key} key={k} style={cell} />
-              ))}
-            </tr>
-          </thead>
+          {columns && columns.length ? (
+            <TableHead columns={columns} style={{ cell, head }} />
+          ) : null}
           <tbody>
             {rows.map((row, i) => (
               <tr className={css(tableRow)} key={i}>
@@ -102,7 +133,7 @@ class Table extends React.Component {
 Table.propTypes = {
   catalog: catalogShape.isRequired,
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  columns: PropTypes.arrayOf(PropTypes.string)
+  ...TableHead.propTypes
 };
 
 Table.defaultProps = {};
