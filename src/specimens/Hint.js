@@ -7,10 +7,7 @@ import Specimen from "../components/Specimen/Specimen";
 import { text, heading } from "../styles/typography";
 
 function getStyle(theme) {
-  return {
-    container: {
-      flexBasis: "100%"
-    },
+  const hintStyles = {
     hint: {
       // Contrast: AAA / AA
       ...text(theme),
@@ -68,6 +65,30 @@ function getStyle(theme) {
       border: "1px solid #bbebc8",
       color: "#1d7d3f"
     }
+  };
+
+  if (theme.hintStyles) {
+    Object.keys(theme.hintStyles)
+      .filter(key => key !== "container")
+      .forEach(key => {
+        const baseKey = key === "base" ? "hint" : key;
+
+        if (!hintStyles[baseKey]) {
+          hintStyles[baseKey] = {};
+        }
+
+        hintStyles[baseKey] = {
+          ...hintStyles[baseKey],
+          ...theme.hintStyles[key]
+        };
+      });
+  }
+
+  return {
+    container: {
+      flexBasis: "100%"
+    },
+    ...hintStyles
   };
 }
 

@@ -48,6 +48,15 @@ export default {
     string: { color: "#00263E" }
   },
 
+  // Hint styles
+  hintStyles: {
+    base: {},
+    neutral: {},
+    important: {},
+    warning: {},
+    directive: {}
+  },
+
   // Patterns
   checkerboardPatternLight:
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAAAAACoWZBhAAAAF0lEQVQI12P4BAI/QICBFCaYBPNJYQIAkUZftTbC4sIAAAAASUVORK5CYII=",
