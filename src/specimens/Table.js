@@ -133,6 +133,7 @@ class Table extends React.Component {
 Table.propTypes = {
   catalog: catalogShape.isRequired,
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
+  customStyle: PropTypes.object,
   ...TableHead.propTypes
 };
 
